@@ -1,0 +1,694 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SECURE CATTO | Web Session Security Analyzer</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">
+                <img src="{{ url_for('static', filename='images/catto.png') }}" alt="Secure Catto">
+            </div>
+            <div>
+                <h2>SECURE CATTO</h2>
+                <p>SECURITY ANALYZER</p>
+            </div>
+        </div>
+
+        <div class="menu-label">MAIN MENU</div>
+
+        <nav class="navigation">
+            <a href="#" class="nav-link active" data-section="dashboard">
+                <span>◈</span> Dashboard
+            </a>
+
+            <a href="#" class="nav-link" data-section="new-scan">
+                <span>⌕</span> New Scan
+            </a>
+
+            <a href="#" class="nav-link" data-section="history">
+                <span>◷</span> Scan History
+            </a>
+
+            <a href="#" class="nav-link" data-section="reports">
+                <span>▤</span> Reports
+            </a>
+
+            <a href="#" class="nav-link" data-section="guide">
+                <span>ⓘ</span> Security Guide
+            </a>
+
+            <a href="#" class="nav-link" data-section="settings">
+                <span>⚙</span> Settings
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="cat-message">
+                <div class="cat-face">😼</div>
+                <h3>Stay pawsitive!</h3>
+                <p>Your security is my priority.</p>
+            </div>
+
+            <div class="version">SECURE CATTO v1.0</div>
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <p class="breadcrumb">OVERVIEW / DASHBOARD</p>
+                <h1>Security Dashboard</h1>
+                <p class="subtitle">Monitor, analyze and secure your web sessions.</p>
+            </div>
+
+            <div class="topbar-right">
+                <span class="system-status">
+                    <span class="status-dot"></span> SYSTEM ACTIVE
+                </span>
+                <div class="profile-icon">🐱</div>
+            </div>
+        </header>
+
+
+        <!-- ORIGINAL DASHBOARD CONTENT -->
+
+        <div id="dashboardView">
+
+            <section class="scan-panel" id="new-scan">
+
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">WEBSITE SECURITY CHECK</p>
+                        <h2>Start a New Scan</h2>
+                        <p>Enter a website URL to analyze its security configuration.</p>
+                    </div>
+
+                    <div class="scan-decoration">⌘</div>
+                </div>
+
+                <form id="scanForm">
+                    <div class="url-input-wrapper">
+                        <span class="url-icon">↗</span>
+
+                        <input
+                            type="text"
+                            id="websiteUrl"
+                            placeholder="https://example.com"
+                            autocomplete="url"
+                            required
+                        >
+
+                        <button type="submit" id="scanButton">
+                            <span>⌕</span> Start Scan
+                        </button>
+                    </div>
+                </form>
+
+                <p class="scan-note">
+                    <span>ⓘ</span> Only scan websites you own or have permission to test.
+                </p>
+
+                <div id="scanMessage" class="scan-message"></div>
+
+            </section>
+
+
+            <section class="stats-grid">
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <span>SECURITY SCORE</span>
+                        <span class="stat-icon purple">◈</span>
+                    </div>
+                    <div class="stat-value" id="securityScore">--<small>/100</small></div>
+                    <p class="stat-description">Latest scan score</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <span>RISK LEVEL</span>
+                        <span class="stat-icon red">⚠</span>
+                    </div>
+                    <div class="stat-value" id="riskLevel">--</div>
+                    <p class="stat-description">Detected security risk</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <span>TOTAL SCANS</span>
+                        <span class="stat-icon blue">⌕</span>
+                    </div>
+                    <div class="stat-value" id="totalScans">0</div>
+                    <p class="stat-description">Scans performed</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top">
+                        <span>LAST SCAN</span>
+                        <span class="stat-icon green">◷</span>
+                    </div>
+                    <div class="stat-value last-scan" id="lastScan">Never</div>
+                    <p class="stat-description">Most recent analysis</p>
+                </div>
+
+            </section>
+
+
+            <section class="content-grid">
+
+                <div class="panel overview-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <p class="eyebrow">ANALYTICS</p>
+                            <h2>Security Overview</h2>
+                        </div>
+                        <span class="panel-symbol">◉</span>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="securityChart"></canvas>
+                    </div>
+                </div>
+
+
+                <div class="panel results-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <p class="eyebrow">LATEST ACTIVITY</p>
+                            <h2>Scan Results</h2>
+                        </div>
+                        <span class="panel-symbol">▤</span>
+                    </div>
+
+                    <div id="scanResults" class="empty-state">
+                        <div class="empty-icon">⌕</div>
+                        <h3>No scan results yet</h3>
+                        <p>Start a new scan to see website security details here.</p>
+                    </div>
+                </div>
+
+            </section>
+
+
+            <section class="panel recommendations-panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">SECURITY IMPROVEMENTS</p>
+                        <h2>Recommendations</h2>
+                    </div>
+                    <span class="panel-symbol">✧</span>
+                </div>
+
+                <div id="recommendations" class="recommendations-list">
+                    <div class="recommendation-empty">
+                        <span>✦</span>
+                        <p>Security recommendations will appear after your first scan.</p>
+                    </div>
+                </div>
+
+            </section>
+
+
+            <section class="panel history-panel" id="history">
+
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">PREVIOUS ACTIVITY</p>
+                        <h2>Recent Scan History</h2>
+                    </div>
+
+                    <button class="text-button" id="refreshHistory">Refresh ↻</button>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>WEBSITE</th>
+                                <th>SECURITY SCORE</th>
+                                <th>RISK LEVEL</th>
+                                <th>SCAN DATE</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="historyTable">
+                            <tr>
+                                <td colspan="4" class="table-empty">No scan history available.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+
+            <footer class="footer">
+                <p>© 2026 SECURE CATTO. Detect. Analyze. Secure.</p>
+                <p>Made with <span>♥</span> for a safer web.</p>
+            </footer>
+
+        </div>
+
+
+        <!-- REPORTS SECTION -->
+
+        <section id="reportsSection" hidden>
+
+            <section class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">SECURITY DOCUMENTATION</p>
+                        <h2>Scan Reports</h2>
+                    </div>
+                    <span class="panel-symbol">▤</span>
+                </div>
+
+                <p>View your previous website security scans and download detailed reports.</p>
+
+                <div class="section-heading">
+                    <div>
+                        <h3>Export Scan History</h3>
+                        <p>Download your saved scan history in CSV format.</p>
+                    </div>
+
+                    <button class="text-button" id="exportCsvButton">
+                        Export CSV ↓
+                    </button>
+                </div>
+            </section>
+
+
+            <section class="panel history-panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">GENERATED RECORDS</p>
+                        <h2>Available Reports</h2>
+                    </div>
+
+                    <button class="text-button" id="refreshReports">
+                        Refresh ↻
+                    </button>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>WEBSITE</th>
+                                <th>SCORE</th>
+                                <th>RISK LEVEL</th>
+                                <th>SCAN DATE</th>
+                                <th>REPORT</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="reportsTable">
+                            <tr>
+                                <td colspan="5" class="table-empty">
+                                    No reports available.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+
+        </section>
+
+
+        <!-- SECURITY GUIDE SECTION -->
+
+        <section id="guideSection" hidden>
+
+            <section class="panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">LEARN WEBSITE SECURITY</p>
+                        <h2>Web Security Guide</h2>
+                    </div>
+                    <span class="panel-symbol">ⓘ</span>
+                </div>
+
+                <p>
+                    This guide explains the security checks performed by Secure Catto
+                    and the importance of protecting web sessions.
+                </p>
+
+            </section>
+
+
+            <section class="panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">FUNDAMENTALS</p>
+                        <h2>1. HTTPS and SSL/TLS</h2>
+                    </div>
+                </div>
+
+                <div class="result-item">
+                    <h3>What is HTTPS?</h3>
+                    <p>
+                        HTTPS is the secure version of HTTP. It uses TLS encryption
+                        to protect data transferred between a browser and a website.
+                    </p>
+                </div>
+
+                <div class="result-item">
+                    <h3>Why is it important?</h3>
+                    <p>
+                        It helps protect login credentials, session information
+                        and other sensitive data from interception.
+                    </p>
+                </div>
+
+                <div class="result-item">
+                    <h3>TLS Certificate</h3>
+                    <p>
+                        A TLS certificate helps authenticate a website and
+                        establish an encrypted connection.
+                    </p>
+                </div>
+
+            </section>
+
+
+            <section class="panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">HTTP PROTECTION</p>
+                        <h2>2. Security Headers</h2>
+                    </div>
+                </div>
+
+                <div class="result-item">
+                    <h3>Content-Security-Policy (CSP)</h3>
+                    <p>
+                        Defines trusted sources for content and helps reduce
+                        cross-site scripting and injection risks.
+                    </p>
+                </div>
+
+                <div class="result-item">
+                    <h3>Strict-Transport-Security (HSTS)</h3>
+                    <p>
+                        Instructs browsers to use HTTPS when communicating
+                        with the website.
+                    </p>
+                </div>
+
+                <div class="result-item">
+                    <h3>X-Frame-Options</h3>
+                    <p>
+                        Helps protect websites against clickjacking by
+                        controlling whether pages can be displayed in frames.
+                    </p>
+                </div>
+
+                <div class="result-item">
+                    <h3>X-Content-Type-Options</h3>
+                    <p>
+                        The nosniff value prevents browsers from MIME-sniffing
+                        certain responses.
+                    </p>
+                </div>
+
+                <div class="result-item">
+                    <h3>Referrer-Policy</h3>
+                    <p>
+                        Controls how much referrer information is shared
+                        when navigating between websites.
+                    </p>
+                </div>
+
+                <div class="result-item">
+                    <h3>Permissions-Policy</h3>
+                    <p>
+                        Controls access to browser features such as camera,
+                        microphone and geolocation.
+                    </p>
+                </div>
+
+            </section>
+
+
+            <section class="panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">SESSION PROTECTION</p>
+                        <h2>3. Secure Cookies</h2>
+                    </div>
+                </div>
+
+                <div class="result-item">
+                    <h3>Secure Flag</h3>
+                    <p>
+                        Restricts cookie transmission to secure HTTPS connections.
+                    </p>
+                </div>
+
+                <div class="result-item">
+                    <h3>HttpOnly Flag</h3>
+                    <p>
+                        Prevents JavaScript from accessing the cookie through
+                        document.cookie.
+                    </p>
+                </div>
+
+                <div class="result-item">
+                    <h3>SameSite Attribute</h3>
+                    <p>
+                        Controls when cookies are sent with cross-site requests
+                        and helps reduce CSRF risks.
+                    </p>
+                </div>
+
+            </section>
+
+
+            <section class="panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">SCORING SYSTEM</p>
+                        <h2>4. Understanding Risk Levels</h2>
+                    </div>
+                </div>
+
+                <div class="result-item">
+                    <h3>Low Risk — Score 80 to 100</h3>
+                    <p>
+                        The scanner detected relatively strong security
+                        configuration among the checks it performs.
+                    </p>
+                </div>
+
+                <div class="result-item">
+                    <h3>Medium Risk — Score 50 to 79</h3>
+                    <p>
+                        Some security configurations may be missing
+                        and should be reviewed.
+                    </p>
+                </div>
+
+                <div class="result-item">
+                    <h3>High Risk — Score 0 to 49</h3>
+                    <p>
+                        Multiple security checks have failed or important
+                        protections are missing.
+                    </p>
+                </div>
+
+            </section>
+
+
+            <section class="panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">IMPORTANT INFORMATION</p>
+                        <h2>5. Scanner Limitations</h2>
+                    </div>
+                </div>
+
+                <div class="result-item">
+                    <p>
+                        Secure Catto performs configuration checks on publicly
+                        accessible website responses. It does not perform a
+                        complete penetration test or prove that a website
+                        is free from vulnerabilities.
+                    </p>
+                </div>
+
+                <div class="result-item">
+                    <p>
+                        A good score does not guarantee complete security.
+                        Additional testing, secure coding practices and
+                        regular security audits are still necessary.
+                    </p>
+                </div>
+
+            </section>
+
+        </section>
+
+
+        <!-- SETTINGS SECTION -->
+
+        <section id="settingsSection" hidden>
+
+            <section class="panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">APPLICATION CONFIGURATION</p>
+                        <h2>Scanner Settings</h2>
+                    </div>
+                    <span class="panel-symbol">⚙</span>
+                </div>
+
+                <p>
+                    Configure how Secure Catto performs website security scans.
+                </p>
+
+                <form id="settingsForm">
+
+                    <div class="result-item">
+                        <h3>Scan Timeout</h3>
+                        <p>
+                            Maximum time in seconds allowed for a website
+                            scan request.
+                        </p>
+
+                        <input
+                            type="number"
+                            id="scanTimeout"
+                            min="5"
+                            max="30"
+                            value="10"
+                            required
+                        >
+                    </div>
+
+
+                    <div class="result-item">
+                        <h3>Follow Redirects</h3>
+                        <p>
+                            Allow the scanner to follow validated website
+                            redirects, with a maximum of five redirects.
+                        </p>
+
+                        <label>
+                            <input type="checkbox" id="followRedirects">
+                            Enable redirect following
+                        </label>
+                    </div>
+
+
+                    <div class="result-item">
+                        <h3>Include Security Headers</h3>
+                        <p>
+                            Include security header details in scan results.
+                        </p>
+
+                        <label>
+                            <input type="checkbox" id="includeHeaders" checked>
+                            Include header details
+                        </label>
+                    </div>
+
+
+                    <div class="result-item">
+                        <h3>Include Cookie Information</h3>
+                        <p>
+                            Include cookie security attributes in scan results.
+                        </p>
+
+                        <label>
+                            <input type="checkbox" id="includeCookies" checked>
+                            Include cookie details
+                        </label>
+                    </div>
+
+
+                    <div class="result-item">
+                        <h3>Save Scan History</h3>
+                        <p>
+                            Store completed scan results in the local database
+                            for future reference and reports.
+                        </p>
+
+                        <label>
+                            <input type="checkbox" id="saveHistory" checked>
+                            Save scan history
+                        </label>
+                    </div>
+
+
+                    <div class="section-heading">
+                        <button type="submit" class="text-button" id="saveSettingsButton">
+                            Save Settings
+                        </button>
+                    </div>
+
+                    <p id="settingsMessage" class="scan-message"></p>
+
+                </form>
+
+            </section>
+
+
+            <section class="panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <p class="eyebrow">DATABASE MANAGEMENT</p>
+                        <h2>Scan History Management</h2>
+                    </div>
+                    <span class="panel-symbol">▤</span>
+                </div>
+
+                <div class="result-item">
+                    <h3>Clear Scan History</h3>
+                    <p>
+                        Permanently delete all previously saved scan records
+                        from the local Secure Catto database.
+                    </p>
+
+                    <button type="button" class="text-button" id="clearHistoryButton">
+                        Clear All History
+                    </button>
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>
